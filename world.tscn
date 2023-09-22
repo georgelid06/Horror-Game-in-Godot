@@ -1,0 +1,95 @@
+[gd_scene load_steps=12 format=3 uid="uid://dvf4q3vjbm7jq"]
+
+[ext_resource type="PackedScene" uid="uid://cdfgddm47l1yb" path="res://house_1.tscn" id="2_u7h76"]
+[ext_resource type="PackedScene" uid="uid://5dgqw0ff842s" path="res://UI.tscn" id="3_la7u2"]
+[ext_resource type="Script" path="res://CharacterBody3D.gd" id="5_aca3a"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_y4fuy"]
+height = 1.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4qxea"]
+albedo_color = Color(0.764706, 0.443137, 0.870588, 1)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xlpxn"]
+height = 1.37581
+
+[sub_resource type="BoxMesh" id="BoxMesh_vgtk0"]
+size = Vector3(100, 0.1, 100)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_b6yfn"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_woomm"]
+sky_top_color = Color(0.929412, 0.752941, 0.721569, 1)
+sky_horizon_color = Color(0, 0, 0, 1)
+sky_curve = 0.135188
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0, 0, 0, 1)
+ground_curve = 0.288401
+
+[sub_resource type="Sky" id="Sky_te8w4"]
+sky_material = SubResource("ProceduralSkyMaterial_woomm")
+
+[sub_resource type="Environment" id="Environment_q6u0q"]
+background_mode = 2
+sky = SubResource("Sky_te8w4")
+ambient_light_source = 3
+ambient_light_color = Color(0.152941, 0.0901961, 1, 1)
+reflected_light_source = 2
+fog_enabled = true
+fog_light_energy = 1.34
+volumetric_fog_enabled = true
+volumetric_fog_emission = Color(0.690196, 0.556863, 0, 1)
+
+[node name="World" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.44113)
+
+[node name="Control" parent="." instance=ExtResource("3_la7u2")]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.983433, 0.181274, 0, -0.181274, 0.983433, 0, 2.04426, 10.4246)
+visible = false
+light_color = Color(0.509804, 0, 0.0784314, 1)
+sky_mode = 1
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.60882, 2.67298, -1.59333)
+visible = false
+script = ExtResource("5_aca3a")
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00255203, 0.791611, 0.166995)
+current = true
+far = 2000.0
+
+[node name="SpotLight3D" type="SpotLight3D" parent="CharacterBody3D/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00255203, -0.382653, -0.728815)
+light_energy = 4.232
+distance_fade_enabled = true
+spot_range = 50.0
+spot_attenuation = 1.27456
+spot_angle = 41.36
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
+transform = Transform3D(0.414552, 0, 0, 0, 1, 0, 0, 0, 0.413158, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_y4fuy")
+surface_material_override/0 = SubResource("StandardMaterial3D_4qxea")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+transform = Transform3D(0.407, 0, 0, 0, 1, 0, 0, 0, 0.407, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_xlpxn")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.115795, 0)
+mesh = SubResource("BoxMesh_vgtk0")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(100, 0, 0, 0, 0.1, 0, 0, 0, 100, 0, 0, 0)
+shape = SubResource("BoxShape3D_b6yfn")
+
+[node name="house2" parent="." instance=ExtResource("2_u7h76")]
+transform = Transform3D(-0.989389, 0, 0.145289, 0, 1, 0, -0.145289, 0, -0.989389, 7.73357, 0.05, 7.9085)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_q6u0q")
