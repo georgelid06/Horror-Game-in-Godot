@@ -5,9 +5,12 @@ var speed = 4.0  # movement speed
 var jump_speed = 6.0  # determines jump height
 var mouse_sensitivity = 0.005  # turning speed
 
+#flashlight variables
 var flashlightPowerBar
-var maxPower = 60
-var rechargeTime = 10  # Time in seconds to fully recharge the flashlight.
+var maxPower = 50
+var isFlashlightOn = false
+var spotlight
+var isFlashlightDrained = false
 
 func get_input():
 	var input = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
@@ -17,12 +20,16 @@ func get_input():
 
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	spotlight = $/root/World/CharacterBody3D/Camera3D/SpotLight3D
 	flashlightPowerBar = $/root/World/Control/Flashlight
-	flashlightPowerBar.value = 1.0
+	flashlightPowerBar.value = maxPower
 
 func _input(event):
 	if event.is_action_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	if event.is_action_pressed("flashlight_button") and isFlashlightDrained == false:
+		isFlashlightOn = not isFlashlightOn
+
 
 func _unhandled_input(event):
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -36,19 +43,25 @@ func _unhandled_input(event):
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-
 func _physics_process(delta):
 	velocity.y += -gravity * delta
 	get_input()
 	move_and_slide()
-	
-func _process(delta):
-	if Input.is_action_pressed("flashlight_button"):
-		if flashlightPowerBar.value > 0.0:
-			flashlightPowerBar.value -= delta / maxPower
-	else:
-		if flashlightPowerBar.value < 1.0:
-			flashlightPowerBar.value += delta / rechargeTime
+	spotlight.visible = isFlashlightOn
 
-	
-	
+func _on_timer_timeout():
+	if isFlashlightOn == true:
+		flashlightPowerBar.value -= 1
+	if flashlightPowerBar.value == 0:
+		await get_tree().create_timer(0.2).timeout
+		isFlashlightDrained = true
+		isFlashlightOn = false
+		
+
+func _on_timer_2_timeout():
+	if isFlashlightDrained == true:
+		flashlightPowerBar.value += 1
+		flashlightPowerBar.modulate = Color(1, 0.843137, 0, 1)
+	if flashlightPowerBar.value == maxPower:
+		isFlashlightDrained = false
+		flashlightPowerBar.modulate = Color(0.972549, 0.972549, 1, 1)
