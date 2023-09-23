@@ -29,7 +29,9 @@ func _input(event):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	if event.is_action_pressed("flashlight_button") and isFlashlightDrained == false:
 		isFlashlightOn = not isFlashlightOn
-
+		$/root/World/CharacterBody3D/working_flashlight.play()
+	if event.is_action_pressed("flashlight_button") and isFlashlightDrained == true:
+		$/root/World/CharacterBody3D/notworking_flashlight.play()
 
 func _unhandled_input(event):
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:

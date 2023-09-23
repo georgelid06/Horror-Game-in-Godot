@@ -1,8 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://dvf4q3vjbm7jq"]
+[gd_scene load_steps=15 format=3 uid="uid://dvf4q3vjbm7jq"]
 
 [ext_resource type="PackedScene" uid="uid://cdfgddm47l1yb" path="res://house_1.tscn" id="2_u7h76"]
+[ext_resource type="AudioStream" uid="uid://b1ru5j2cy708w" path="res://sounds/working_flashlight.ogg" id="3_5fxa2"]
 [ext_resource type="PackedScene" uid="uid://5dgqw0ff842s" path="res://UI.tscn" id="3_la7u2"]
+[ext_resource type="AudioStream" uid="uid://offadh76ldhf" path="res://sounds/notworking_flashlight.ogg" id="4_18vb4"]
 [ext_resource type="Script" path="res://CharacterBody3D.gd" id="5_aca3a"]
+[ext_resource type="PackedScene" uid="uid://qptxegw6mud8" path="res://bushes.tscn" id="6_jjtfb"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_y4fuy"]
 height = 1.4
@@ -53,11 +56,11 @@ light_color = Color(0.509804, 0, 0.0784314, 1)
 sky_mode = 1
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.60882, 2.67298, -1.59333)
+transform = Transform3D(0.0237342, 0, 0.999718, 0, 1, 0, -0.999718, 0, 0.0237342, 11.9271, 2.67298, -0.834026)
 script = ExtResource("5_aca3a")
 
 [node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00255203, 0.791611, 0.166995)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00255203, 0.791611, 0.166994)
 current = true
 far = 2000.0
 
@@ -70,13 +73,19 @@ spot_attenuation = 1.27456
 spot_angle = 41.36
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
-transform = Transform3D(0.414552, 0, 0, 0, 1, 0, 0, 0, 0.413158, 0, 0, 0)
+transform = Transform3D(0.414552, 0, 0, 0, 1, 0, -9.31323e-10, 0, 0.413158, 0, 0, 0)
 mesh = SubResource("CapsuleMesh_y4fuy")
 surface_material_override/0 = SubResource("StandardMaterial3D_4qxea")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
 transform = Transform3D(0.407, 0, 0, 0, 1, 0, 0, 0, 0.407, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_xlpxn")
+
+[node name="working_flashlight" type="AudioStreamPlayer" parent="CharacterBody3D"]
+stream = ExtResource("3_5fxa2")
+
+[node name="notworking_flashlight" type="AudioStreamPlayer" parent="CharacterBody3D"]
+stream = ExtResource("4_18vb4")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 
@@ -89,7 +98,7 @@ transform = Transform3D(100, 0, 0, 0, 0.1, 0, 0, 0, 100, 0, 0, 0)
 shape = SubResource("BoxShape3D_b6yfn")
 
 [node name="house2" parent="." instance=ExtResource("2_u7h76")]
-transform = Transform3D(-0.989389, 0, 0.145289, 0, 1, 0, -0.145289, 0, -0.989389, 7.73357, 0.05, 7.9085)
+transform = Transform3D(-1, 0, 0.000105023, 0, 1, 0, -0.000105023, 0, -1, 7.73357, 0.05, 7.9085)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_q6u0q")
@@ -101,6 +110,8 @@ autostart = true
 [node name="Timer2" type="Timer" parent="."]
 wait_time = 0.1
 autostart = true
+
+[node name="Node3D" parent="." instance=ExtResource("6_jjtfb")]
 
 [connection signal="timeout" from="Timer" to="CharacterBody3D" method="_on_timer_timeout"]
 [connection signal="timeout" from="Timer2" to="CharacterBody3D" method="_on_timer_2_timeout"]
